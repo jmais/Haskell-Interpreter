@@ -45,6 +45,13 @@ import Pascal.Lexer
         '<='            {Token _ (TokenOp "<=")}
         '=='            {Token _ (TokenOp "==")}
         '!='            {Token _ (TokenOp "!=")}
+        'do'            { Token _ (TokenK "do")}
+        'while'         {Token _ (TokenK "while")}
+        'for'           {Token _ (TokenK "for")}
+        'to'           {Token _ (TokenK "to")}
+        'writeln'           {Token _ (TokenK "to")}
+        'readln'           {Token _ (TokenK "to")}
+
 
 
 -- associativity of operators in reverse precedence order
@@ -99,6 +106,8 @@ GenExp :: {GenExp}
 Statement :: {Statement}
     : ID ':=' GenExp { Assign $1 $3 }
     | 'if' '(' BoolExp ')' 'then' Statements 'else' Statements {If $3 $6 $8}
+    | 'writeln' '(' GenExp ')' {Write $3}
+    | 'readln' '(' GenExp ')'{Read}
 
 {
 

@@ -16,7 +16,7 @@ module Pascal.Data
         Program
     ) where
 import qualified Data.Map.Strict as Map
-import Data.Maybe
+import Data.Maybe()
 -- Data-structure for  numeric expressions
 data Exp = 
     -- unary operator: Op name expression
@@ -57,30 +57,32 @@ data Statement =
     Assign String GenExp
     -- If statement
     | If BoolExp [Statement] [Statement]
+    |Write GenExp
+    |Read
     -- Block
     | Block [Statement]
     deriving(Show,Eq)
 
 
 addVal:: Map.Map String Value-> String->Value ->Map.Map String Value
-addVal t id val = Map.insert id val t
+addVal t str val = Map.insert str val t
 
 getVal::Map.Map String Value->String-> Value
-getVal t id = case Map.lookup id t of
+getVal t str = case Map.lookup str t of
         Just a -> a
         Nothing -> error "Id not in map"
 
 updateVal:: Map.Map String Value->String->Value->Map.Map String Value
-updateVal t id val = Map.insert id val t
+updateVal t str val = Map.insert str val t
 
 toFloat :: Value->Float
 toFloat (R x) = x
-toFloat (B x) = error "not Float"
+toFloat _ = error "not Float"
 
 
 toBool :: Value->Bool
 toBool (B x) = x
-toBool (R x) = error "not Bool"
+toBool _ = error "not Bool"
 
 
 -- Data-structure for hole program

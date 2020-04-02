@@ -30,10 +30,16 @@ intExp _ _ =error "Invalid Operation"
 boolExp:: BoolExp->Map.Map String Value-> Value
 boolExp (True_C) _ = (B True)
 boolExp (False_C) _ = (B False)
-boolExp (Not exp) s = error "not implemented"
+boolExp (Not e1) s = (B (not(toBool(boolExp e1 s))))
 boolExp (V e1) s = (getVal s e1)
 boolExp ( OpB "and" e1 e2) s = (B $ toBool(boolExp e1 s) && toBool(boolExp e2 s))
+boolExp ( OpB "or" e1 e2) s = (B $ toBool(boolExp e1 s) || toBool(boolExp e2 s))
 boolExp (Comp ">" e1 e2) s = (B (toFloat(intExp e1 s) > toFloat(intExp e2 s)))
+boolExp (Comp "<" e1 e2) s = (B (toFloat(intExp e1 s) < toFloat(intExp e2 s)))
+boolExp (Comp ">=" e1 e2) s = (B (toFloat(intExp e1 s) >= toFloat(intExp e2 s)))
+boolExp (Comp "<=" e1 e2) s = (B (toFloat(intExp e1 s) <= toFloat(intExp e2 s)))
+boolExp (Comp "==" e1 e2) s = (B (toFloat(intExp e1 s) == toFloat(intExp e2 s)))
+boolExp (Comp "!=" e1 e2) s = (B (toFloat(intExp e1 s) /= toFloat(intExp e2 s)))
 
 
 
@@ -49,7 +55,9 @@ eval (If b e1 e2) s = do
     if toBool(boolExp b s) 
         then interpret e1 s 
         else interpret e2 s
-eval (While b e1) 
+--eval (While b e1)
+eval Read s = s
+eval (Write e1) s = s
 eval _ _ = error "not implemented"
 
 
