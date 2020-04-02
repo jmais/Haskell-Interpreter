@@ -1,0 +1,5 @@
+begin
+A:= 10.0
+B:= A + 5.0
+writeln(B)
+end

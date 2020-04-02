@@ -10,5 +10,5 @@ main = do
     contents <- readFile fileName
     case parseString contents of 
         Left err -> print $ show err
-        Right ast -> print $ show (Map.toList (interpret ast Map.empty))
+        Right ast -> putStrLn $ interpret ast
 

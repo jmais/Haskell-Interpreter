@@ -504,8 +504,8 @@ happyNewToken action sts stk
 	Token _ (TokenK "while") -> cont 32#;
 	Token _ (TokenK "for") -> cont 33#;
 	Token _ (TokenK "to") -> cont 34#;
-	Token _ (TokenK "to") -> cont 35#;
-	Token _ (TokenK "to") -> cont 36#;
+	Token _ (TokenK "writeln") -> cont 35#;
+	Token _ (TokenK "readln") -> cont 36#;
 	_ -> happyError' (tk, [])
 	})
 

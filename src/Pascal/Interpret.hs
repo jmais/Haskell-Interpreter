@@ -13,7 +13,7 @@ import qualified Data.Map.Strict as Map
 
 -- make sure you write test unit cases for all functions
 
-intExp :: Exp ->Map.Map String Value -> Value
+intExp :: Exp ->[Map.Map String Value] -> Value
 intExp (Real e1) _ =(R e1)
 intExp (Var e1) s =(getVal s e1)
 intExp (Op1 "ln" e1) s = (R (log (toFloat(intExp e1 s))))
@@ -27,7 +27,7 @@ intExp (Op2 "/" e1 e2) s = (R $ toFloat(intExp e1 s) / toFloat(intExp e2 s))
 intExp (Op2 "-" e1 e2) s = (R $ toFloat(intExp e1 s) - toFloat(intExp e2 s))
 intExp _ _ =error "Invalid Operation"
 
-boolExp:: BoolExp->Map.Map String Value-> Value
+boolExp:: BoolExp->[Map.Map String Value]-> Value
 boolExp (True_C) _ = (B True)
 boolExp (False_C) _ = (B False)
 boolExp (Not e1) s = (B (not(toBool(boolExp e1 s))))
@@ -43,26 +43,40 @@ boolExp (Comp "!=" e1 e2) s = (B (toFloat(intExp e1 s) /= toFloat(intExp e2 s)))
 
 
 
-eval2 :: GenExp -> Map.Map String Value ->  Value
+eval2 :: GenExp -> [Map.Map String Value] ->  Value
 --evalout for statements that add to string
 eval2 (FloatExp e1) s = intExp e1 s
 eval2 (BExp e1) s = boolExp e1 s
 
-eval :: Statement-> Map.Map String Value-> Map.Map String Value
-eval (Assign name e1) s = addVal s name (eval2 e1 s)
-eval (Block prog) s = interpret prog s
-eval (If b e1 e2) s = do 
+eval :: Statement-> String -> [Map.Map String Value]-> (String,[Map.Map String Value])
+eval (Assign name e1) out s = (out, addVal s name (eval2 e1 s))
+eval (Block prog) out s = evalStatements prog out s
+eval (If b e1 e2) out s = do 
     if toBool(boolExp b s) 
-        then interpret e1 s 
-        else interpret e2 s
+        then evalStatements e1 out s 
+        else evalStatements e2 out s
 --eval (While b e1)
-eval Read s = s
-eval (Write e1) s = s
-eval _ _ = error "not implemented"
+eval Read out s = (out,s)
+eval (Write e1) out s = (out ++ show(eval2 e1 s) ++ "\n",s)
+eval _ _ _ = error "not implemented"
 
 
-interpret :: Program -> Map.Map String Value-> Map.Map String Value
-interpret [x] s = eval x s
-interpret (x:xs) s = interpret xs (eval x s)
+evalStatements:: [Statement] -> String -> [Map.Map String Value] -> (String,[Map.Map String Value])
+evalStatements (x:xs) out scope = let (output,scopes) = eval x out scope
+                                    in evalStatements xs output scopes
+evalStatements [] out scope = (out, scope)
+
+interpret :: Program ->String
+interpret x = let (output,scope) = evalStatements x "" [Map.empty]
+                in output
 -- TODO: write the interpreter
-interpret _ _ = Map.empty
+interpret []= ""
+
+
+
+-- Add acutal scoping logic when doing if statments etc
+-- while loops for loops
+-- break and continue ( if possible )
+-- functions I do not think adding parameters to functions will be easier might not want to do that
+-- add semicolon to parser and make part of end of statments
+-- add variable definniton block

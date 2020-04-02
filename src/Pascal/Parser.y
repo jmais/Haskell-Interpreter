@@ -49,8 +49,8 @@ import Pascal.Lexer
         'while'         {Token _ (TokenK "while")}
         'for'           {Token _ (TokenK "for")}
         'to'           {Token _ (TokenK "to")}
-        'writeln'           {Token _ (TokenK "to")}
-        'readln'           {Token _ (TokenK "to")}
+        'writeln'           {Token _ (TokenK "writeln")}
+        'readln'           {Token _ (TokenK "readln")}
 
 
 

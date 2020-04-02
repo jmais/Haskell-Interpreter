@@ -8,7 +8,6 @@ module Pascal.Data
         Statement(..),
         addVal,
         getVal,
-        updateVal,
         GenExp(..),
         Value(..),
         toFloat,
@@ -64,16 +63,26 @@ data Statement =
     deriving(Show,Eq)
 
 
-addVal:: Map.Map String Value-> String->Value ->Map.Map String Value
-addVal t str val = Map.insert str val t
+addVal:: [Map.Map String Value]-> String->Value -> [Map.Map String Value]
+addVal (t:scope) str val = Map.insert str val t : scope
 
-getVal::Map.Map String Value->String-> Value
-getVal t str = case Map.lookup str t of
+getVal::[Map.Map String Value]->String-> Value
+getVal (t:scope) str = case Map.lookup str t of
         Just a -> a
-        Nothing -> error "Id not in map"
+        Nothing -> error "Id not in scope"
 
-updateVal:: Map.Map String Value->String->Value->Map.Map String Value
-updateVal t str val = Map.insert str val t
+--for functions
+addScopeEmpty:: [Map.Map String Value] -> [Map.Map String Value]
+addScopeEmpty scope = (Map.empty:scope) 
+
+--for everything else
+addScope::[Map.Map String Value] -> [Map.Map String Value]
+--taken from forth code for duplicating value on list
+addScope (x:scope) = x:x:scope 
+
+deleteScope:: [Map.Map String Value] -> [Map.Map String Value]
+deleteScope (x:scope) = scope
+deleteScope [] = []
 
 toFloat :: Value->Float
 toFloat (R x) = x
