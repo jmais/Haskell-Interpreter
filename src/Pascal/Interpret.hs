@@ -41,6 +41,12 @@ boolExp (Comp "<=" e1 e2) s = (B (toFloat(intExp e1 s) <= toFloat(intExp e2 s)))
 boolExp (Comp "==" e1 e2) s = (B (toFloat(intExp e1 s) == toFloat(intExp e2 s)))
 boolExp (Comp "!=" e1 e2) s = (B (toFloat(intExp e1 s) /= toFloat(intExp e2 s)))
 
+evalIf:: Statement->String->[Map.Map String Value]-> (String,[Map.Map String Value])
+evalIf (If b e1 e2) out s = do 
+    if toBool(boolExp b s) 
+        then evalStatements e1 out (deleteScope s) 
+        else evalStatements e2 out (deleteScope s)
+
 
 
 eval2 :: GenExp -> [Map.Map String Value] ->  Value
@@ -51,10 +57,7 @@ eval2 (BExp e1) s = boolExp e1 s
 eval :: Statement-> String -> [Map.Map String Value]-> (String,[Map.Map String Value])
 eval (Assign name e1) out s = (out, addVal s name (eval2 e1 s))
 eval (Block prog) out s = evalStatements prog out s
-eval (If b e1 e2) out s = do 
-    if toBool(boolExp b s) 
-        then evalStatements e1 out s 
-        else evalStatements e2 out s
+eval (If b e1 e2) out s = evalIf (If b e1 e2) out (addScope s)
 --eval (While b e1)
 eval Read out s = (out,s)
 eval (Write e1) out s = (out ++ show(eval2 e1 s) ++ "\n",s)

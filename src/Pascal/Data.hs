@@ -8,6 +8,9 @@ module Pascal.Data
         Statement(..),
         addVal,
         getVal,
+        addScope,
+        addScopeEmpty,
+        deleteScope,
         GenExp(..),
         Value(..),
         toFloat,
@@ -81,7 +84,9 @@ addScope::[Map.Map String Value] -> [Map.Map String Value]
 addScope (x:scope) = x:x:scope 
 
 deleteScope:: [Map.Map String Value] -> [Map.Map String Value]
-deleteScope (x:scope) = scope
+-- union put all values that are in x in y if the keys are the same use the value that is in x
+-- intersection y only take values that are in y
+deleteScope (x:y:scope) = (Map.intersection y (Map.union x y)):scope
 deleteScope [] = []
 
 toFloat :: Value->Float
