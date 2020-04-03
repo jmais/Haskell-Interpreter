@@ -124,6 +124,7 @@ Statement :: {Statement}
     : ID ':=' GenExp  ';' { Assign $1 $3 } 
     | 'if' '(' BoolExp ')' 'then' Statements 'else' 'begin' Statements 'end' ';' {If $3 $6 $9}
     | 'while' BoolExp 'do' 'begin' Statements 'end' ';' {While $2 $5}
+    | 'for' ID ':=' Exp 'to' Exp 'do' 'begin' Statements 'end' ';' {For $2 $4 $6 $9}
     | 'writeln' '(' GenExp ')' ';' {Write $3}
     | 'readln' '(' GenExp ')' ';' {Read}
 

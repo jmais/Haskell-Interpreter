@@ -62,6 +62,7 @@ data Statement =
     -- If statement
     | If BoolExp [Statement] [Statement]
     | While BoolExp [Statement]
+    |For String Exp Exp [Statement]
     |Write GenExp
     |Read
     -- Block

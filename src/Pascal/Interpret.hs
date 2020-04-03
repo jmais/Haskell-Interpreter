@@ -52,7 +52,14 @@ evalWhile (While b e1) out s = do
     if toBool(boolExp b s)
         then let (newOut,newMap)  = evalStatements e1 out s
                     in evalWhile (While b e1) newOut newMap
-        else (out,(deleteScope s))   
+        else (out,(deleteScope s))
+
+
+evalFor:: Statement->String->[Map.Map String Value]-> (String,[Map.Map String Value])
+evalFor (For name count max body) out s = if (toFloat(getVal s name)) < (toFloat(intExp max s))
+                                            then let (newOut,newMap) = evalStatements body out s
+                                                        in evalFor (For name count max body) newOut (addVal newMap name (R (toFloat(getVal newMap name) + 1.0)))
+                                            else (out,(deleteScope s))
 
 eval2 :: GenExp -> [Map.Map String Value] ->  Value
 --evalout for statements that add to string
@@ -64,7 +71,8 @@ eval (Assign name e1) out s = (out, addVal s name (eval2 e1 s))
 eval (Block prog) out s = evalStatements prog out s
 eval (If b e1 e2) out s = evalIf (If b e1 e2) out (addScope s)
 eval (While b e1) out s = evalWhile (While b e1) out (addScope s)
---eval (While b e1)
+eval (For name count max body) out s =  let newScope = (addScope s)
+                                            in evalFor (For name count max body) out ((addVal newScope name (intExp count s)))
 eval Read out s = (out,s)
 eval (Write e1) out s = (out ++ show(eval2 e1 s) ++ "\n",s)
 eval _ _ _ = error "not implemented"
@@ -99,9 +107,6 @@ interpret _ = ""
 
 
 
--- Add acutal scoping logic when doing if statments etc
--- while loops for loops
+-- for loops
 -- break and continue ( if possible )
 -- functions I do not think adding parameters to functions will be easier might not want to do that
--- add semicolon to parser and make part of end of statments
--- add variable definniton block

@@ -21,3 +21,5 @@ begin
     writeln(Z);
 
 end;
+
+//expected output Id not in scope
