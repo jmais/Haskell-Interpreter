@@ -61,6 +61,7 @@ data Statement =
     Assign String GenExp
     -- If statement
     | If BoolExp [Statement] [Statement]
+    | While BoolExp [Statement]
     |Write GenExp
     |Read
     -- Block

@@ -122,7 +122,8 @@ Type :: {VType}
 
 Statement :: {Statement}
     : ID ':=' GenExp  ';' { Assign $1 $3 } 
-    | 'if' '(' BoolExp ')' 'then' Statements 'else' Statements {If $3 $6 $8}
+    | 'if' '(' BoolExp ')' 'then' Statements 'else' 'begin' Statements 'end' ';' {If $3 $6 $9}
+    | 'while' BoolExp 'do' 'begin' Statements 'end' ';' {While $2 $5}
     | 'writeln' '(' GenExp ')' ';' {Write $3}
     | 'readln' '(' GenExp ')' ';' {Read}
 

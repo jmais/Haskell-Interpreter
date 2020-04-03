@@ -11,6 +11,11 @@ begin
     writeln(B);
     writeln(D);
     writeln(C);
-
+    while D > A do
+    begin
+    writeln(A);
+    A:= A + 1.0;
+    end;
+    writeln(A);
 
 end;
