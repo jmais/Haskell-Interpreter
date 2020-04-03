@@ -15,7 +15,9 @@ begin
     begin
     writeln(A);
     A:= A + 1.0;
+    Z:=A;
     end;
     writeln(A);
+    writeln(Z);
 
 end;
