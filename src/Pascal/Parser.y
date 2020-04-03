@@ -45,13 +45,18 @@ import Pascal.Lexer
         '<='            {Token _ (TokenOp "<=")}
         '=='            {Token _ (TokenOp "==")}
         '!='            {Token _ (TokenOp "!=")}
-        'do'            { Token _ (TokenK "do")}
+        'do'            {Token _ (TokenK "do")}
         'while'         {Token _ (TokenK "while")}
         'for'           {Token _ (TokenK "for")}
-        'to'           {Token _ (TokenK "to")}
-        'writeln'           {Token _ (TokenK "writeln")}
-        'readln'           {Token _ (TokenK "readln")}
-
+        'to'            {Token _ (TokenK "to")}
+        'writeln'       {Token _ (TokenK "writeln")}
+        'readln'        {Token _ (TokenK "readln")}
+        'program'       {Token _ (TokenK "program")}
+        ';'             {Token _ (TokenK ";")}
+        'var'           {Token _ (TokenK "var")}
+        'real'          {Token _ (TokenK "real")}
+        'boolean'       {Token _ (TokenK "boolean")}
+        ':'             {Token _ (TokenOp ":")}
 
 
 -- associativity of operators in reverse precedence order
@@ -63,7 +68,7 @@ import Pascal.Lexer
 
 -- Entry point
 Program :: {Program}
-    : 'begin' Statements 'end' { $2 }
+    : 'program' ID ';' Def 'begin' Statements 'end' ';' { ($4, $6) }
 -- Expressions
 Exp :: {Exp}
     : float {Real $1}
@@ -80,6 +85,13 @@ Exp :: {Exp}
     | Exp '/' Exp { Op2 "/" $1  $3}
     | '(' Exp ')' { $2 } -- ignore brackets
 
+Def::{[Definition]}
+: { [] }
+| Definition Def {$1:$2}
+
+Definition::{Definition}
+: 'var' ID ':'Type ';'  {Dtype $2 $4}
+| 'var' ID ':' Type '=' GenExp ';' {Dval $2 $6}
 
 BoolExp :: {BoolExp}
     : 'true' { True_C }
@@ -103,11 +115,16 @@ GenExp :: {GenExp}
     | BoolExp { BExp $1 }
 
 
+Type :: {VType}
+    : 'boolean' { BOOL }
+    | 'real' { REAL }
+
+
 Statement :: {Statement}
-    : ID ':=' GenExp { Assign $1 $3 }
+    : ID ':=' GenExp  ';' { Assign $1 $3 } 
     | 'if' '(' BoolExp ')' 'then' Statements 'else' Statements {If $3 $6 $8}
-    | 'writeln' '(' GenExp ')' {Write $3}
-    | 'readln' '(' GenExp ')'{Read}
+    | 'writeln' '(' GenExp ')' ';' {Write $3}
+    | 'readln' '(' GenExp ')' ';' {Read}
 
 {
 

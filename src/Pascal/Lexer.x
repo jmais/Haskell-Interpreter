@@ -39,11 +39,11 @@ tokens :-
   $white+                               ; -- remove multiple white-spaces
   "//".*                                ; -- skip one line comments
   $digit+\.$digit*                      { tok_read     TokenFloat }
-  [\+]|[\-]|[\*]|[\/]|[=]|:=            { tok_string     TokenOp }
+  [\+]|[\-]|[\*]|[\/]|[=]|:=|[\:]            { tok_string     TokenOp }
   [\>]|[\>=]|[\<]|[\<=]|[\==]|[\!=]         { tok_string     TokenOp }
   [\(]|[\)]|begin|end|true|false|and    { tok_string     TokenK }
-  if|then|else|do|while|for|to          { tok_string     TokenK }
-  ln|sqr|cos|sin|exp|writeln|readln     { tok_string     TokenK}
+  if|then|else|do|while|for|to|program|real|boolean          { tok_string     TokenK }
+  ln|sqr|cos|sin|exp|writeln|readln|";"|var     { tok_string     TokenK}
   $alpha [$alpha $digit \_ \']*         { tok_string TokenID }
 
 {

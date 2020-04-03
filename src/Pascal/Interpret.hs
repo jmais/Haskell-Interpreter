@@ -69,11 +69,27 @@ evalStatements (x:xs) out scope = let (output,scopes) = eval x out scope
                                     in evalStatements xs output scopes
 evalStatements [] out scope = (out, scope)
 
+def::Definition ->  [Map.Map String Value] ->  [Map.Map String Value]
+def (Dtype name x) table = case x of
+                    REAL -> addVal table name (R 0.0)
+                    BOOL -> addVal table name (B True)
+def (Dval name x) table = addVal table  name (eval2 x table)
+def _ _ = error "not valid definiton"
+
+
+evalDefs::[Definition] -> [Map.Map String Value] -> [Map.Map String Value]
+evalDefs (x:defs) table = let s = def x table
+                            in evalDefs defs s
+evalDefs [] table = table
+
+
+
 interpret :: Program ->String
-interpret x = let (output,scope) = evalStatements x "" [Map.empty]
-                in output
+interpret (def,prog) =  let table = evalDefs def [Map.empty]
+                            (output,scope) = evalStatements prog "" table
+                            in output
 -- TODO: write the interpreter
-interpret []= ""
+interpret _ = ""
 
 
 

@@ -13,6 +13,8 @@ module Pascal.Data
         deleteScope,
         GenExp(..),
         Value(..),
+        Definition(..),
+        VType(..),
         toFloat,
         toBool,
         Program
@@ -65,6 +67,11 @@ data Statement =
     | Block [Statement]
     deriving(Show,Eq)
 
+data VType = REAL | BOOL 
+
+data Definition =
+    Dtype String VType
+    |Dval String GenExp
 
 addVal:: [Map.Map String Value]-> String->Value -> [Map.Map String Value]
 addVal (t:scope) str val = Map.insert str val t : scope
@@ -102,4 +109,4 @@ toBool _ = error "not Bool"
 -- Data-structure for hole program
 -- TODO: add declarations and other useful stuff
 -- Hint: make a tuple containing the other ingredients
-type Program = [Statement]
+type Program = ([Definition],[Statement])
