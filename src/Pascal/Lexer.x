@@ -41,9 +41,10 @@ tokens :-
   "(*"(.* | [\n])* "*)"                 ; -- block comments
   $digit+\.$digit*                      { tok_read     TokenFloat }
   [\+]|[\-]|[\*]|[\/]|[=]|:=|[\:]            { tok_string     TokenOp }
-  [\>]|[\>=]|[\<]|[\<=]|[\==]|[\!=]         { tok_string     TokenOp }
-  [\(]|[\)]|begin|end|true|false|and|procedure|function    { tok_string     TokenK }
-  if|then|else|do|while|for|to|program|real|boolean          { tok_string     TokenK }
+  [\>]|">="|[\<]|"<="|"=="|"!="       { tok_string     TokenOp }
+  [\(]|[\)]|begin|end|true|false|and|procedure|function|or    { tok_string     TokenK }
+  if|then|else|do|while|for|to|program|real|boolean|not          { tok_string     TokenK }
+  "'" [$alpha $digit \_\ \:\=\+\-\*\/\$\#\@\!\?]* "'"     { tok_string     TokenString}
   ln|sqr|cos|sin|exp|writeln|readln|";"|var     { tok_string     TokenK}
   $alpha [$alpha $digit \_ \']*         { tok_string TokenID }
 
@@ -69,6 +70,7 @@ data TokenClass
  | TokenK      String
  | TokenFloat  Float
  | TokenID    String
+ | TokenString String
  | TokenEOF
  deriving (Eq, Show)
 

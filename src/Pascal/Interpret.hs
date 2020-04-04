@@ -19,7 +19,7 @@ intExp (Var e1) s =(getVal s e1)
 intExp (Op1 "ln" e1) s = (R (log (toFloat(intExp e1 s))))
 intExp (Op1 "sin" e1) s = (R (sin (toFloat(intExp e1 s))))
 intExp (Op1 "cos" e1) s = (R (cos (toFloat(intExp e1 s))))
-intExp (Op1 "sqrt" e1) s = (R (sqrt (toFloat(intExp e1 s))))
+intExp (Op1 "sqr" e1) s = (R (sqrt (toFloat(intExp e1 s))))
 intExp (Op2 "exp" e1 e2) s = (R $ toFloat(intExp e1 s) ** toFloat(intExp e2 s))
 intExp (Op2 "+" e1 e2) s = (R $ toFloat(intExp e1 s) + toFloat(intExp e2 s))
 intExp (Op2 "*" e1 e2) s = (R $ toFloat(intExp e1 s) * toFloat(intExp e2 s))
@@ -81,6 +81,7 @@ eval (For name count max body) out s funcT =  let newScope = (addScope s)
                                             in evalFor (For name count max body) out ((addVal newScope name (intExp count s))) funcT
 eval Read out s funcT = (out,s,funcT)
 eval (Write e1) out s funcT = (out ++ show(eval2 e1 s) ++ "\n",s,funcT)
+eval (WriteS e1) out s funcT = (out ++ e1 ++ "\n", s, funcT)
 eval (ProcCall name) out table funcT = let (newOut, newTable, newFunc) = evalProc (ProcCall name) out table funcT
                                         in (newOut, (deleteScopeFuncs newTable) , newFunc)
 eval _ _ _ _ = error "not valid statement"

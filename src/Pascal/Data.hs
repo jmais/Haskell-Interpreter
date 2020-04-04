@@ -63,6 +63,7 @@ data Statement =
     | While BoolExp [Statement]
     |For String Exp Exp [Statement]
     |Write GenExp
+    |WriteS String
     |Read
     |ProcCall String
     -- Block

@@ -17,6 +17,7 @@ import Pascal.Lexer
 %token
         float           { Token _ (TokenFloat $$) }
         ID              { Token _ (TokenID $$)  }
+        string          { Token _ (TokenString $$) }
         '+'             { Token _ (TokenOp "+")   }
         '-'             { Token _ (TokenOp "-")   }
         '*'             { Token _ (TokenOp "*")   }
@@ -30,6 +31,7 @@ import Pascal.Lexer
         'true'          { Token _ (TokenK "true") }
         'false'         { Token _ (TokenK "false") }
         'and'           { Token _ (TokenK "and") }
+        'or'            {Token _ (TokenK "or")}
         'not'           { Token _ (TokenK "not") }
         'ln'            { Token _ (TokenK "ln") }
         'sqr'           { Token _ (TokenK "sqr") }
@@ -65,6 +67,7 @@ import Pascal.Lexer
 %nonassoc '>' '>=' '<' '<=' '==' '!='
 %left '+' '-'
 %left '*' '/'
+%left 'and' 'or'
 %nonassoc ':='
 %%
 
@@ -95,7 +98,7 @@ Definition::{Definition}
 : 'var' ID ':' Type ';'  {Dtype $2 $4}
 | 'var' ID ':' Type '=' GenExp ';' {Dval $2 $6}
 | 'procedure' ID '(' ')' 'begin' Statements 'end' ';' {Proc $2 $6}
-| 'function' ID '('')'  'begin' Statements 'end' ';' ':' Type  {Func $2 $6 $10}
+| 'function' ID '('')' ':' Type 'begin' Statements 'end' ';'  {Func $2 $8 $6}
 
 BoolExp :: {BoolExp}
     : 'true' { True_C }
@@ -103,12 +106,14 @@ BoolExp :: {BoolExp}
     | ID {V $1}
     | 'not' BoolExp { Not $2 }
     | BoolExp 'and' BoolExp { OpB "and" $1 $3 }
+    | BoolExp 'or' BoolExp {OpB "or" $1 $3}
     | Exp '>' Exp { Comp ">" $1 $3 }
     | Exp '>=' Exp { Comp ">=" $1 $3 }
     | Exp '<' Exp { Comp "<" $1 $3 }
     | Exp '<=' Exp { Comp "<=" $1 $3 }
     | Exp '==' Exp { Comp "==" $1 $3 }
     | Exp '!=' Exp { Comp "!=" $1 $3 }
+    | '(' BoolExp ')' { $2 } -- ignore brackets
 
 Statements :: {[Statement]}
     : { [] } -- nothing; make empty list
@@ -130,6 +135,7 @@ Statement :: {Statement}
     | 'while' BoolExp 'do' 'begin' Statements 'end' ';' {While $2 $5}
     | 'for' ID ':=' Exp 'to' Exp 'do' 'begin' Statements 'end' ';' {For $2 $4 $6 $9}
     | 'writeln' '(' GenExp ')' ';' {Write $3}
+    | 'writeln' '(' string ')' ';' {WriteS $3}
     | 'readln' '(' GenExp ')' ';' {Read}
     | ID '(' ')' ';' {ProcCall $1}
 
