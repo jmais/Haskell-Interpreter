@@ -17,6 +17,7 @@ module Pascal.Data
         VType(..),
         toFloat,
         toBool,
+        deleteScopeFuncs,
         Program
     ) where
 import qualified Data.Map.Strict as Map
@@ -27,8 +28,6 @@ data Exp =
     Op1 String Exp
     -- binary operator: Op name leftExpression rightExpression
     | Op2 String Exp Exp
-    -- function call: FunctionCall name ListArguments
-    | FunCall String [Exp]
     -- real value: e.g. Real 1.0
     | Real Float
 
@@ -65,6 +64,7 @@ data Statement =
     |For String Exp Exp [Statement]
     |Write GenExp
     |Read
+    |ProcCall String
     -- Block
     | Block [Statement]
     deriving(Show,Eq)
@@ -74,6 +74,8 @@ data VType = REAL | BOOL
 data Definition =
     Dtype String VType
     |Dval String GenExp
+    |Proc String [Statement]
+    |Func String [Statement] VType
 
 addVal:: [Map.Map String Value]-> String->Value -> [Map.Map String Value]
 addVal (t:scope) str val = Map.insert str val t : scope
@@ -96,7 +98,11 @@ deleteScope:: [Map.Map String Value] -> [Map.Map String Value]
 -- union put all values that are in x in y if the keys are the same use the value that is in x
 -- intersection y only take values that are in y
 deleteScope (x:y:scope) = (Map.intersection x y):scope
+deleteScope [x] = [x]
 deleteScope [] = []
+
+deleteScopeFuncs:: [Map.Map String Value] -> [Map.Map String Value]
+deleteScopeFuncs (x:scope) = scope;
 
 toFloat :: Value->Float
 toFloat (R x) = x

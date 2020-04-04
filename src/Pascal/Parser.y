@@ -55,6 +55,8 @@ import Pascal.Lexer
         ';'             {Token _ (TokenK ";")}
         'var'           {Token _ (TokenK "var")}
         'real'          {Token _ (TokenK "real")}
+        'function'      {Token _ (TokenK "function")}
+        'procedure'     {Token _ (TokenK "procedure")}
         'boolean'       {Token _ (TokenK "boolean")}
         ':'             {Token _ (TokenOp ":")}
 
@@ -90,8 +92,10 @@ Def::{[Definition]}
 | Definition Def {$1:$2}
 
 Definition::{Definition}
-: 'var' ID ':'Type ';'  {Dtype $2 $4}
+: 'var' ID ':' Type ';'  {Dtype $2 $4}
 | 'var' ID ':' Type '=' GenExp ';' {Dval $2 $6}
+| 'procedure' ID '(' ')' 'begin' Statements 'end' ';' {Proc $2 $6}
+| 'function' ID '('')'  'begin' Statements 'end' ';' ':' Type  {Func $2 $6 $10}
 
 BoolExp :: {BoolExp}
     : 'true' { True_C }
@@ -127,6 +131,7 @@ Statement :: {Statement}
     | 'for' ID ':=' Exp 'to' Exp 'do' 'begin' Statements 'end' ';' {For $2 $4 $6 $9}
     | 'writeln' '(' GenExp ')' ';' {Write $3}
     | 'readln' '(' GenExp ')' ';' {Read}
+    | ID '(' ')' ';' {ProcCall $1}
 
 {
 
