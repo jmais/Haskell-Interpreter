@@ -1,0 +1,10 @@
+Joseph Maisevich and David Jaworski
+
+Instructions on running the Project:
+
+cabal build (just build the project)
+cabal run tests/test*.pas (run and build project replace asterisk with # of test you would like to run)
+
+All aspects of the project are fully functional except for functions not retunring values or allowing parameters,
+The break and continue keywords do not work , and case statements are not funcitonal.
+Varibales can be created in a new scope but if that variable does not exist in the previous scope it will not be carried over.
