@@ -1,35 +1,8 @@
 import Test.Hspec
 import Test.QuickCheck
 import Control.Exception (evaluate)
--- import Pascal.Data
--- import Pascal.Interpret
 import qualified Data.Map.Strict as Map
-
--- This file contains the data-structures for the AST
--- The role of the parser is to build the AST (Abstract Syntax Tree) 
-
--- module Pascal.Data
---     (
---         Exp(..),
---         BoolExp(..),
---         Statement(..),
---         addVal,
---         getVal,
---         addScope,
---         addScopeEmpty,
---         deleteScope,
---         GenExp(..),
---         Value(..),
---         Definition(..),
---         VType(..),
---         toFloat,
---         toBool,
---         deleteScopeFuncs,
---         Program
---     ) where
--- import qualified Data.Map.Strict as Map
 import Data.Maybe()
--- Data-structure for  numeric expressions
 data Exp = 
     -- unary operator: Op name expression
     Op1 String Exp
@@ -62,7 +35,6 @@ data Value = R Float | B Bool deriving (Show,Eq)
 data GenExp = FloatExp Exp | BExp BoolExp deriving(Show,Eq)
 -- Data-structure for statements
 data Statement = 
-    -- TODO: add other statements
     -- Variable assignment
     Assign String GenExp
     -- If statement
@@ -121,26 +93,7 @@ toBool :: Value->Bool
 toBool (B x) = x
 toBool _ = error "not Bool"
 
-
--- Data-structure for hole program
--- TODO: add declarations and other useful stuff
--- Hint: make a tuple containing the other ingredients
 type Program = ([Definition],[Statement])
-
--- module Pascal.Interpret 
--- (
---     interpret
--- )
--- where
--- import Pascal.Data
--- import qualified Data.Map.Strict as Map
-
--- TODO: define auxiliary functions to aid interpretation
--- Feel free to put them here or in different modules
--- Hint: write separate evaluators for numeric and
--- boolean expressions and for statements
-
--- make sure you write test unit cases for all functions
 
 intExp :: Exp ->[Map.Map String Value] -> Value
 intExp (Real e1) _ =(R e1)
@@ -244,14 +197,7 @@ interpret :: Program ->String
 interpret (defs,prog) = let (table,funcT) = evalDefs defs [Map.empty] Map.empty
                             (output,scope,fun) = evalStatements prog "" table funcT
                             in output
--- TODO: write the interpreter
 interpret _ = ""
-
-
-
--- for loops
--- break and continue ( if possible )
--- functions I do not think adding parameters to functions will be easier might not want to do that
 
 
 main :: IO ()
