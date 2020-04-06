@@ -38,8 +38,8 @@ boolExp (Comp ">" e1 e2) s = (B (toFloat(intExp e1 s) > toFloat(intExp e2 s)))
 boolExp (Comp "<" e1 e2) s = (B (toFloat(intExp e1 s) < toFloat(intExp e2 s)))
 boolExp (Comp ">=" e1 e2) s = (B (toFloat(intExp e1 s) >= toFloat(intExp e2 s)))
 boolExp (Comp "<=" e1 e2) s = (B (toFloat(intExp e1 s) <= toFloat(intExp e2 s)))
-boolExp (Comp "==" e1 e2) s = (B (toFloat(intExp e1 s) == toFloat(intExp e2 s)))
-boolExp (Comp "!=" e1 e2) s = (B (toFloat(intExp e1 s) /= toFloat(intExp e2 s)))
+boolExp (Comp "=" e1 e2) s = (B (toFloat(intExp e1 s) == toFloat(intExp e2 s)))
+boolExp (Comp "<>" e1 e2) s = (B (toFloat(intExp e1 s) /= toFloat(intExp e2 s)))
 boolExp _ _ = error "Invalid Operation"
 
 evalIf:: Statement->String->[Map.Map String Value]->  Map.Map String [Statement] -> (String,[Map.Map String Value],Map.Map String [Statement])
